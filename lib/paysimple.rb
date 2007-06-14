@@ -1,4 +1,4 @@
-gem 'soap4r', '>= 1.5.5.20070607' # 1.5.6 RC3 or higher
+gem 'soap4r', '>= 1.5.6' # 1.5.6 or higher
 require 'soap/wsdlDriver' 
 require 'digest/sha1'
 
