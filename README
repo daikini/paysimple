@@ -64,10 +64,7 @@ These are your credentials when using the PaySimple API.
       :CreditCardData => {
         :CardNumber => '4444555566667779',
         :CardExpiration => '0908'
-      },
-      :Schedule => :monthly,
-      :Next => "2008-09-05",
-      :Amount => 12.00
+      }
     )
 
     puts "Subscription updated"

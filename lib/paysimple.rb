@@ -69,10 +69,7 @@ class PaySimple
       #     :CreditCardData => {
       #       :CardNumber => '4444555566667779',
       #       :CardExpiration => '0908'
-      #     },
-      #     :Schedule => :monthly,
-      #     :Next => "2008-09-05",
-      #     :Amount => 12.00
+      #     }
       #   )
       #     
       #   puts "Subscription updated"
@@ -80,6 +77,82 @@ class PaySimple
       #   puts "An error occurred: #{e.message}"
       # end
       def update(customer_number, options)
+        customer = find(customer_number)
+        options = PaySimple.symbolize_hash(options)
+        
+        # Add the existing customer properties to the options hash unless they already exist
+        [
+          :CustomerID,
+          :SendReceipt, 
+          :ReceiptNote, 
+          :Notes, 
+          :User, 
+          :Source, 
+          :Schedule, 
+          :Next, 
+          :NumLeft, 
+          :Amount, 
+          :Enabled, 
+          :CustomData, 
+          :Description, 
+          :OrderID
+        ].each do |property|
+          options[property] = customer[property.to_s] unless options.has_key?(property)
+        end
+        
+        # Add the existing customer address properties to the options hash unless they already exist
+        options[:BillingAddress] ||= {}
+        [
+          :FirstName,
+          :LastName,
+          :Company,
+          :Street,
+          :Street2,
+          :City,
+          :State,
+          :Zip,
+          :Country,
+          :Phone,
+          :Fax,
+          :Email
+        ].each do |property|
+          options[:BillingAddress][property] = customer["BillingAddress"][property.to_s] unless options[:BillingAddress].has_key?(property)
+        end
+        
+        # Add the existing customer credit card properties to the options hash unless they already exist
+        options[:CreditCardData] ||= {}
+        [
+          :CardNumber,
+          :CardExpiration,
+          :CardCode,
+          :AvsStreet,
+          :AvsZip,
+          :CardPresent,
+          :MagStripe,
+          :TermType,
+          :MagSupport,
+          :XID,
+          :CAVV,
+          :ECI,
+          :InternalCardAuth,
+          :Pares
+        ].each do |property|
+          options[:CreditCardData][property] = customer["CreditCardData"][property.to_s] unless options[:CreditCardData].has_key?(property)
+        end
+        
+        # Add the existing customer check properties to the options hash unless they already exist
+        options[:CheckData] ||= {}
+        [
+          :CheckNumber,
+          :Routing,
+          :Account,
+          :SSN,
+          :DriversLicense,
+          :DriversLicenseState
+        ].each do |property|
+          options[:CheckData][property] = customer["CheckData"][property.to_s] unless options[:CheckData].has_key?(property)
+        end
+        
         PaySimple.send_request(:updateCustomer, customer_number, options)
       end
       
@@ -151,6 +224,10 @@ class PaySimple
   
   private
   class << self
+    def symbolize_hash(hash)
+      hash.inject({}) { |h,(k,v)| h[k.to_sym] = v; h }
+    end
+    
     def token
       seed = "#{Time.now.to_i}#{rand(999999)}"
       hash = Digest::SHA1.hexdigest([key, seed, pin].join)
