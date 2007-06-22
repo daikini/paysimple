@@ -15,7 +15,10 @@ require 'digest/sha1'
 #   $ sudo gem install paysimple
 #
 # Directly from repository:
-#   $ svn co svn://rubyforge.org/var/svn/paysimple/trunk paysimple
+#   $ ./script/plugin install svn://svn.roundhaus.com/daikini/plugins/paysimple
+#
+# Directly from repository using piston:
+#   $ piston import svn://svn.roundhaus.com/daikini/plugins/paysimple vendor/plugins/paysimple
 #
 # == Configuration
 #
