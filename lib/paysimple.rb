@@ -30,6 +30,7 @@ require 'digest/sha1'
 #   PaySimple.client_ip = "192.168.0.1"
 #
 class PaySimple
+  VERSION = "1.0.0"
   WSDL_URL = File.dirname(__FILE__) + '/usaepay.wsdl'
   
   class << self
