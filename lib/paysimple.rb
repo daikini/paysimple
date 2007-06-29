@@ -61,7 +61,7 @@ class PaySimple
       #   puts "An error occurred: #{e.message}"
       # end
       def create(options)
-        PaySimple.send_request(:addCustomer, options.merge(:Enabled => true))
+        PaySimple.send_request(:addCustomer, { :NumLeft => 0, :Enabled => true }.merge(options))
       end
       
       # # Update subscription to use new credit card
