@@ -25,6 +25,7 @@ require 'digest/sha1'
 # When you signup for a PaySimple account you can setup a source key and optionally a pin and client ip address.
 # These are your credentials when using the PaySimple API.
 #
+#   PaySimple.source = "My API Source Key Name"
 #   PaySimple.key = "123456"
 #   PaySimple.pin = "topsecret"
 #   PaySimple.client_ip = "192.168.0.1"
@@ -34,7 +35,7 @@ class PaySimple
   WSDL_URL = File.dirname(__FILE__) + '/usaepay.wsdl'
   
   class << self
-    attr_accessor :key, :pin, :client_ip
+    attr_accessor :source, :key, :pin, :client_ip
   end
   self.key = "TestMerchant"
   
@@ -62,7 +63,7 @@ class PaySimple
       #   puts "An error occurred: #{e.message}"
       # end
       def create(options)
-        PaySimple.send_request(:addCustomer, { :NumLeft => 0, :Enabled => true }.merge(options))
+        PaySimple.send_request(:addCustomer, { :Source => PaySimple.source, :NumLeft => 0, :Enabled => true }.merge(options))
       end
       
       # # Update subscription to use new credit card

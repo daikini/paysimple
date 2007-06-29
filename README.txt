@@ -24,6 +24,7 @@ Directly from repository:
 When you signup for a PaySimple account you can setup a source key and optionally a pin and client ip address.
 These are your credentials when using the PaySimple API.
 
+	PaySimple.source = "My API Source Key Name"
   PaySimple.key = "123456"
   PaySimple.pin = "topsecret"
   PaySimple.client_ip = "192.168.0.1"
