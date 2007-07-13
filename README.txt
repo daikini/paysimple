@@ -4,7 +4,7 @@ processing, check processing and recurring / subscription billing services.
 == DESCRIPTION:
 
 This library provides a simple interface to find, create, edit, delete, and query subscriptions
-using the PaySimple SOAP API. [PaySimple API](https://www.usaepay.com/developer/docs/beta5)
+using the PaySimple SOAP API. [PaySimple API](https://www.usaepay.com/developer/docs/beta6)
 
 
 == Installation:
@@ -90,7 +90,7 @@ These are your credentials when using the PaySimple API.
     customer_number = 12345
     customer = PaySimple::Subscription.find(customer_number)
 
-    puts "Found subscription for #{ [customer["BillingAddress"]["FirstName"], customer["BillingAddress"]["LastName"]].join(" ")}"
+    puts "Found subscription for #{customer["BillingAddress"]["FirstName"], customer["BillingAddress"]["LastName"]].join(" ")}"
   rescue Exception => e
     puts "An error occurred: #{e.message}"
   end

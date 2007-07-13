@@ -7,7 +7,7 @@ require 'digest/sha1'
 # processing, check processing and recurring / subscription billing services.
 #
 # This library provides a simple interface to find, create, edit, delete, and query subscriptions
-# using the PaySimple SOAP API. [PaySimple API](https://www.usaepay.com/developer/docs/beta5)
+# using the PaySimple SOAP API. [PaySimple API](https://www.usaepay.com/developer/docs/beta6)
 #
 # == Installation
 #
@@ -31,7 +31,7 @@ require 'digest/sha1'
 #   PaySimple.client_ip = "192.168.0.1"
 #
 class PaySimple
-  VERSION = "1.0.0"
+  VERSION = "1.1.0"
   WSDL_URL = File.dirname(__FILE__) + '/usaepay.wsdl'
   
   class << self
@@ -179,7 +179,7 @@ class PaySimple
       #   customer_number = 12345
       #   customer = PaySimple::Subscription.find(customer_number)
       # 
-      #   puts "Found subscription for #{ [customer["BillingAddress"]["FirstName"], customer["BillingAddress"]["LastName"]].join(" ")}"
+      #   puts "Found subscription for #{customer["BillingAddress"]["FirstName"], customer["BillingAddress"]["LastName"]].join(" ")}"
       # rescue Exception => e
       #   puts "An error occurred: #{e.message}"
       # end
@@ -200,8 +200,8 @@ class PaySimple
       # rescue Exception => e
       #   puts "An error occurred: #{e.message}"
       # end
-      def charge(customer_number, options, auth_only = false)
-        PaySimple.send_request(:runCustomerSale, customer_number, options, auth_only)
+      def charge(customer_number, options, command = "", payment_method_id = 0)
+        PaySimple.send_request(:runCustomerTransaction, customer_number, options, command, payment_method_id)
       end
       
       # # Search for transactions
