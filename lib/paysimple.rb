@@ -7,7 +7,7 @@ require 'digest/sha1'
 # processing, check processing and recurring / subscription billing services.
 #
 # This library provides a simple interface to find, create, edit, delete, and query subscriptions
-# using the PaySimple SOAP API. [PaySimple API](https://www.usaepay.com/developer/docs/beta6)
+# and single transactions using the PaySimple SOAP API. [PaySimple API](https://www.usaepay.com/developer/docs/beta6)
 #
 # == Installation
 #
@@ -50,8 +50,8 @@ class PaySimple
       #       :LastName => "Smith"
       #     },
       #     :CreditCardData => {
-      #       :CardNumber => '4444555566667779',
-      #       :CardExpiration => '0908'
+      #       :CardNumber => "4444555566667779",
+      #       :CardExpiration => "0908"
       #     },
       #     :Schedule => :monthly,
       #     :Next => "2008-09-05",
@@ -72,8 +72,8 @@ class PaySimple
       #   response = PaySimple::Subscription.update(
       #     customer_number,
       #     :CreditCardData => {
-      #       :CardNumber => '4444555566667779',
-      #       :CardExpiration => '0908'
+      #       :CardNumber => "4444555566667779",
+      #       :CardExpiration => "0908"
       #     }
       #   )
       #     
@@ -192,10 +192,10 @@ class PaySimple
       #   customer_number = 12345
       #   response = PaySimple::Subscription.charge(customer_number, :Amount => 34.56)
       # 
-      #   if response['Response'] == "Approved"
+      #   if response["Response"] == "Approved"
       #     puts "One-time charge successful."
       #   else
-      #     puts "An error occurred: #{response['Error']}"
+      #     puts "An error occurred: #{response["Error"]}"
       #   end
       # rescue Exception => e
       #   puts "An error occurred: #{e.message}"
@@ -208,12 +208,12 @@ class PaySimple
       # begin
       #   response = PaySimple::Subscription.query(
       #     [ 
-      #       { :Field => 'amount', :Type => 'gt', :Value => '5.0' }
+      #       { :Field => "amount", :Type => "gt", :Value => "5.0" }
       #     ]
       #   )
       # 
       #   response.transactions.each do |transaction|
-      #     puts "CustomerID = #{transaction['CustomerID']}, Amount = #{transaction['Details']['Amount']}"
+      #     puts "CustomerID = #{transaction["CustomerID"]}, Amount = #{transaction["Details"]["Amount"]}"
       #   end
       # rescue Exception => e
       #   puts "An error occurred: #{e.message}"
@@ -227,7 +227,85 @@ class PaySimple
     end
   end
   
-  private
+  class Transaction
+    class << self
+      # # Bill Jennifer $12.00
+      # begin
+      #   transaction = PaySimple::Transaction.create(
+      #     :CustomerID => 12345,
+      #     :AccountHolder => "Jennifer Smith",
+      #     :CreditCardData => {
+      #       :CardNumber => "4444555566667779",
+      #       :CardExpiration => "0908"
+      #     },
+      #     :Details => {
+      #       :Amount => 12.00
+      #     }
+      #   )
+      # 
+      #   puts "Sale transaction created with Reference Number: #{transaction["RefNum"]}"
+      # rescue Exception => e
+      #   puts "An error occurred: #{e.message}"
+      # end
+      #
+      # # Credit Jennifer $12.00
+      # begin
+      #   transaction = PaySimple::Transaction.create(
+      #     :CustomerID => 12345,
+      #     :AccountHolder => "Jennifer Smith",
+      #     :CreditCardData => {
+      #       :CardNumber => "4444555566667779",
+      #       :CardExpiration => "0908"
+      #     },
+      #     :Details => {
+      #       :Amount => -12.00
+      #     }
+      #   )
+      # 
+      #   puts "Credit transaction created with Reference Number: #{transaction["RefNum"]}"
+      # rescue Exception => e
+      #   puts "An error occurred: #{e.message}"
+      # end
+      def create(options)
+        options = PaySimple.symbolize_hash(options)
+        request_type = options[:Details][:Amount] > 0.0 ? :runSale : :runCredit
+        options[:Details][:Amount] = options[:Details][:Amount].abs
+        
+        PaySimple.send_request(request_type, { :Source => PaySimple.source }.merge(options))
+      end
+      
+      # # Void an unsettled transaction 
+      # begin
+      #   reference_number = 12345
+      #   result = PaySimple::Transaction.void(reference_number)
+      #   
+      #   if result
+      #     puts "Transaction was voided"
+      #   else
+      #     puts "Unable to void transaction"
+      #   end
+      # rescue Exception => e
+      #   puts "An error occurred: #{e.message}"
+      # end
+      def void(reference_number)
+        PaySimple.send_request(:voidTransaction, reference_number)
+      end
+      
+      # # Find an existing transaction 
+      # begin
+      #   reference_number = 12345
+      #   transaction = PaySimple::Transaction.find(reference_number)
+      #   
+      #   puts "Found transaction"
+      # rescue Exception => e
+      #   puts "An error occurred: #{e.message}"
+      # end
+      def find(reference_number)
+        PaySimple.send_request(:getTransaction, reference_number)
+      end
+    end
+  end
+  
   class << self
     def symbolize_hash(hash)
       hash.inject({}) { |h,(k,v)| h[k.to_sym] = v; h }
@@ -249,7 +327,6 @@ class PaySimple
     
     def send_request(request, *args)
       @driver ||= SOAP::WSDLDriverFactory.new(WSDL_URL).create_rpc_driver
-      @driver.options["protocol.http.ssl_config.verify_mode"] = nil
       @driver.send(request, token, *args)
     end
   end

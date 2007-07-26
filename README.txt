@@ -4,7 +4,7 @@ processing, check processing and recurring / subscription billing services.
 == DESCRIPTION:
 
 This library provides a simple interface to find, create, edit, delete, and query subscriptions
-using the PaySimple SOAP API. [PaySimple API](https://www.usaepay.com/developer/docs/beta6)
+and single transactions using the PaySimple SOAP API. [PaySimple API](https://www.usaepay.com/developer/docs/beta6)
 
 
 == Installation:
@@ -127,6 +127,71 @@ These are your credentials when using the PaySimple API.
   end
 
 
+  # Bill Jennifer $12.00
+  begin
+    transaction = PaySimple::Transaction.create(
+      :CustomerID => 12345,
+      :AccountHolder => "Jennifer Smith",
+      :CreditCardData => {
+        :CardNumber => "4444555566667779,
+        :CardExpiration => "0908"
+      },
+      :Details => {
+        :Amount => 12.00
+      }
+    )
+  
+    puts "Sale transaction created with Reference Number: #{transaction["RefNum"]}"
+  rescue Exception => e
+    puts "An error occurred: #{e.message}"
+  end
+  
+  
+  # Credit Jennifer $12.00
+  begin
+    transaction = PaySimple::Transaction.create(
+      :CustomerID => 12345,
+      :AccountHolder => "Jennifer Smith",
+      :CreditCardData => {
+        :CardNumber => "4444555566667779,
+        :CardExpiration => "0908"
+      },
+      :Details => {
+        :Amount => -12.00
+      }
+    )
+  
+    puts "Credit transaction created with Reference Number: #{transaction["RefNum"]}"
+  rescue Exception => e
+    puts "An error occurred: #{e.message}"
+  end
+  
+  
+  # Void an unsettled transaction 
+  begin
+    reference_number = 12345
+    result = PaySimple::Transaction.void(reference_number)
+    
+    if result
+      puts "Transaction was voided"
+    else
+      puts "Unable to void transaction"
+    end
+  rescue Exception => e
+    puts "An error occurred: #{e.message}"
+  end
+  
+  
+  # Find an existing transaction 
+  begin
+    reference_number = 12345
+    transaction = PaySimple::Transaction.find(reference_number)
+    
+    puts "Found transaction"
+  rescue Exception => e
+    puts "An error occurred: #{e.message}"
+  end
+  
 == LICENSE:
 
 paysimple is licensed under the MIT License.
