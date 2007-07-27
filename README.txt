@@ -17,7 +17,7 @@ Directly from repository:
 
 == Requirements:
 
-* soap4r 1.5.6 or higher
+* soap4r 1.5.7 or higher
 
 == Configuration:
 

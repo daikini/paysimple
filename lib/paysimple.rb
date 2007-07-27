@@ -1,5 +1,5 @@
 require 'rubygems'
-gem 'soap4r', '>= 1.5.6' # 1.5.6 or higher
+gem 'soap4r', '>= 1.5.7' # 1.5.7 or higher
 require 'soap/wsdlDriver' 
 require 'digest/sha1'
 
