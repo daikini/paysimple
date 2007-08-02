@@ -268,10 +268,9 @@ class PaySimple
       # end
       def create(options)
         options = PaySimple.symbolize_hash(options)
-        request_type = options[:Details][:Amount] > 0.0 ? :runSale : :runCredit
+        options[:Command] ||= (options[:Details][:Amount] > 0.0 ? :sale : :credit)
         options[:Details][:Amount] = options[:Details][:Amount].abs
-        
-        PaySimple.send_request(request_type, { :Source => PaySimple.source }.merge(options))
+        PaySimple.send_request(:runTransaction, { :Source => PaySimple.source }.merge(options))
       end
       
       # # Void an unsettled transaction 
