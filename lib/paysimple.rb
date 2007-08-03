@@ -85,6 +85,9 @@ class PaySimple
         customer = find(customer_number)
         options = PaySimple.symbolize_hash(options)
         
+        # NumLeft Bug in SOAP Beta 6
+        options[:NumLeft] = customer["NumLeft"].first unless options.has_key?(:NumLeft)
+        
         # Add the existing customer properties to the options hash unless they already exist
         [
           :CustomerID,
@@ -95,7 +98,6 @@ class PaySimple
           :Source, 
           :Schedule, 
           :Next, 
-          :NumLeft, 
           :Amount, 
           :Enabled, 
           :CustomData, 
@@ -158,7 +160,7 @@ class PaySimple
           options[:CheckData][property] = customer["CheckData"][property.to_s] unless options[:CheckData].has_key?(property)
         end
         
-        PaySimple.send_request(:updateCustomer, customer_number, options)
+        PaySimple.send_request(:updateCustomer, customer_number, { :Source => PaySimple.source, :NumLeft => 0 }.merge(options))
       end
       
       # # Delete subscription
