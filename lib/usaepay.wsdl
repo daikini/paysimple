@@ -23,7 +23,6 @@
 					<xsd:element name="CustomerID" type="xsd:string"/>
 					<xsd:element name="Description" type="xsd:string"/>
 					<xsd:element name="Enabled" type="xsd:boolean"/>
-					<xsd:element name="NumLeft" type="xsd:integer"/>
 					<xsd:element name="Next" type="xsd:string"/>
 					<xsd:element name="Notes" type="xsd:string"/>
 					<xsd:element name="NumLeft" type="xsd:integer"/>

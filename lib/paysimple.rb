@@ -85,9 +85,6 @@ class PaySimple
         customer = find(customer_number)
         options = PaySimple.symbolize_hash(options)
         
-        # NumLeft Bug in SOAP Beta 6
-        options[:NumLeft] = customer["NumLeft"].first unless options.has_key?(:NumLeft)
-        
         # Add the existing customer properties to the options hash unless they already exist
         [
           :CustomerID,
@@ -97,7 +94,8 @@ class PaySimple
           :User, 
           :Source, 
           :Schedule, 
-          :Next, 
+          :Next,
+          :NumLeft, 
           :Amount, 
           :Enabled, 
           :CustomData, 
@@ -186,7 +184,11 @@ class PaySimple
       #   puts "An error occurred: #{e.message}"
       # end
       def find(customer_number)
-        PaySimple.send_request(:getCustomer, customer_number)
+        customer = PaySimple.send_request(:getCustomer, customer_number)
+
+        # NumLeft Bug in SOAP Beta 6
+        customer["NumLeft"] = Array(customer["NumLeft"]).first
+        customer
       end
       
       # # Process one-time sale against existing subscription

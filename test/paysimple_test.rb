@@ -66,6 +66,7 @@ class PaySimpleTest < Test::Unit::TestCase
     assert_equal subscription_attributes[:Enabled], subscription["Enabled"]
     assert_equal "2010-09-05T12:00:00", subscription["Next"]
     assert_equal subscription_attributes[:Notes], subscription["Notes"]
+    assert_equal subscription_attributes[:NumLeft], subscription["NumLeft"]
     assert_equal subscription_attributes[:OrderID], subscription["OrderID"]
     assert_equal subscription_attributes[:ReceiptNote], subscription["ReceiptNote"]
     assert_equal subscription_attributes[:Schedule].to_s, subscription["Schedule"]
