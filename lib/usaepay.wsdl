@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
+<!-- USAePay Soap Interface - Beta 6 (RPC) -->
 <!-- WSDL file generated painstakingly by hand -->
 
 <definitions name="usaepay" targetNamespace="urn:usaepay" xmlns:typens="urn:usaepay" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
@@ -725,7 +726,7 @@
 		<part name="CustNum" type="xsd:integer"/>
 		<part name="Details" type="typens:TransactionDetail"/>
 		<part name="Command" type="xsd:string"/>
-		<part name="PaymenthMethodID" type="xsd:integer"/>
+		<part name="PaymentMethodID" type="xsd:integer"/>
 	</message>
 	<message name="runCustomerTransactionResponse">
 		<part name="runCustomerTransactionReturn" type="typens:TransactionResponse"/>

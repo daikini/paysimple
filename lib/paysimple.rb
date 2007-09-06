@@ -184,11 +184,7 @@ class PaySimple
       #   puts "An error occurred: #{e.message}"
       # end
       def find(customer_number)
-        customer = PaySimple.send_request(:getCustomer, customer_number)
-
-        # NumLeft Bug in SOAP Beta 6
-        customer["NumLeft"] = Array(customer["NumLeft"]).first
-        customer
+        PaySimple.send_request(:getCustomer, customer_number)
       end
       
       # # Process one-time sale against existing subscription
